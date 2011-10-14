@@ -1,36 +1,46 @@
--- xmonad config used by Vic Fryzel
--- Author: Vic Fryzel
--- http://github.com/vicfryzel/xmonad-config
- 
-import System.IO
-import System.Exit
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers
-import XMonad.Hooks.SetWMName
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Spiral
-import XMonad.Layout.Tabbed
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.EZConfig(additionalKeys)
+import System.IO
+import System.Exit
+
+-- layouts
+import XMonad.Layout.NoBorders
+import XMonad.Layout.ResizableTile
+import XMonad.Layout.Reflect
+import XMonad.Layout.IM
+import XMonad.Layout.Tabbed
+import XMonad.Layout.PerWorkspace (onWorkspace)
+import XMonad.Layout.Grid
+import XMonad.Layout.Combo
+import XMonad.Layout.TwoPane
+ 
+-- Data.Ratio for IM layout
+import Data.Ratio ((%))
+
+--etc
+import XMonad.Actions.CopyWindow
+import XMonad.Hooks.SetWMName
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
-
-
+import qualified Data.Map as M
+import XMonad.Hooks.ManageHelpers
+import XMonad.Util.EZConfig
+ 
 ------------------------------------------------------------------------
 -- Terminal
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
-myTerminal = "/usr/bin/urxvt"
+myTerminal = "urxvt"
 
 
 ------------------------------------------------------------------------
 -- Workspaces
 -- The default number of workspaces (virtual screens) and their names.
 --
-myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
+myWorkspaces = ["1:term","2:web","3:mail","4:chat","5:media"] ++ map show [6..9]
  
 
 ------------------------------------------------------------------------
@@ -49,16 +59,13 @@ myWorkspaces = ["1:term","2:web","3:code","4:vm","5:media"] ++ map show [6..9]
 --
 myManageHook = composeAll
     [ className =? "Chromium"       --> doShift "2:web"
-    , resource  =? "desktop_window" --> doIgnore
-    , className =? "Galculator"     --> doFloat
     , className =? "Gimp"           --> doFloat
+    , className =? "VLC"       --> doFullFloat
+    , className =? "Pidgin"    --> doShift "4:chat"
+    , className =? "Skype"     --> doShift "4:chat"
     , className =? "Google-chrome"  --> doShift "2:web"
-    , resource  =? "gpicview"       --> doFloat
-    , resource  =? "kdesktop"       --> doIgnore
     , className =? "MPlayer"        --> doFloat
-    , resource  =? "skype"          --> doFloat
-    , className =? "VirtualBox"     --> doShift "4:vm"
-    , className =? "Xchat"          --> doShift "5:media"
+    , className =? "Xchat"          --> doShift "4:chat"
     , isFullscreen --> (doF W.focusDown <+> doFullFloat)]
 
 
@@ -72,24 +79,29 @@ myManageHook = composeAll
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (
-    tiled |||
-    Mirror tiled |||
-    tabbed shrinkText tabConfig |||
-    Full |||
-    spiral (6/7))
-  where
-    -- default tiling algorithm partitions the screen into two panes.
-    tiled   = Tall nmaster delta ratio
+myLayout = onWorkspace "1:term" termLayout $ onWorkspace "2:web" webLayout $ onWorkspace "3:mail" mailLayout $ onWorkspace "4:chat" chatLayout $ standardLayouts
+    where
+        standardLayouts =   avoidStruts  $ (tiled ||| full |||  reflectTiled ||| Mirror tiled ||| Grid ) 
  
-    -- The default number of windows in the master pane.
-    nmaster = 1
- 
-    -- Default proportion of screen occupied by master pane.
-    ratio   = 1/2
- 
-    -- Percent of screen to increment by when resizing panes.
-    delta   = 3/100
+        --Layouts
+        tiled     = smartBorders (ResizableTall 1 (2/100) (1/2) [])
+        reflectTiled = (reflectHoriz tiled)
+        full      = noBorders Full
+        tabLayout = noBorders (tabbed shrinkText tabConfig)
+
+        --Im Layout
+        chatLayout = avoidStruts $ smartBorders $ reflectHoriz $ withIM pidginRatio pidginRoster (Grid ||| tabLayout) where
+                pidginRatio = (1%5)
+                pidginRoster    = (ClassName "Pidgin") `And` (Role "buddy_list")
+
+        --Web Layout
+        webLayout      = avoidStruts $ (full ||| tabLayout)
+
+        --terminal layout
+        termLayout = avoidStruts $ (Mirror tiled ||| Grid ||| full)
+
+        --mail layout
+        mailLayout = avoidStruts $ (full ||| tabLayout)
 
 
 ------------------------------------------------------------------------
@@ -97,7 +109,7 @@ myLayout = avoidStruts (
 -- Currently based on the ir_black theme.
 --
 myNormalBorderColor  = "#7c7c7c"
-myFocusedBorderColor = "#ffb6b0"
+myFocusedBorderColor = "red"
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme {
@@ -127,7 +139,7 @@ myBorderWidth = 1
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
 --
-myModMask = mod1Mask
+myModMask = mod4Mask
  
 -- The mask for the numlock key. Numlock status is "masked" from the
 -- current modifier status, so the keybindings will work with numlock on or
@@ -160,7 +172,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Launch dmenu via yeganesh.
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn "exe=`dmenu_path | yeganesh` && eval \"exec $exe\"")
+     spawn "exe=`dmenu_run | yeganesh` && eval \"exec $exe\"")
 
   -- Take a screenshot in select mode.
   -- After pressing this key binding, click a window, or draw a rectangle with
@@ -175,15 +187,15 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   -- Mute volume.
   , ((0, 0x1008FF12),
-     spawn "amixer -q set Front toggle")
+     spawn "amixer -q set Master toggle")
 
   -- Decrease volume.
   , ((0, 0x1008FF11),
-     spawn "amixer -q set Front 10%-")
+     spawn "amixer -q set Master 5%- unmute")
 
   -- Increase volume.
   , ((0, 0x1008FF13),
-     spawn "amixer -q set Front 10%+")
+     spawn "amixer -q set Master 5%+ unmute")
 
   -- Audio previous.
   , ((0, 0x1008FF16),
