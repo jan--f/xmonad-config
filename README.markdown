@@ -1,32 +1,9 @@
 # xmonad-config
-xmonad-config is the [xmonad](http://xmonad.org/) configuration used by Vic Fryzel.
+xmonad-config is the [xmonad](http://xmonad.org/) configuration used by me. It
+is based on the config of [Vic Fryzel](http://github.com/vicfryzel/xmonad-config), copied without shame and modified to my liking.
 
 
-## Introduction
-
-If you are unfamiliar with xmonad, it is a tiling window manager that is
-notoriously minimal, stable, beautiful, and featureful.  If you find yourself
-spending a lot of time organizing or managing windows, you may consider trying
-xmonad.
-
-However, xmonad can be somewhat difficult to configure if you're new to
-Haskell or even to xmonad itself.
-
-This project contains a completely working and very usable xmonad
-configuration "out of the box".  If you are just starting out with xmonad,
-this will give you a configuration that I personally use for around 12 hours
-every day.  Thought has been put into the colors, key bindings, layouts,
-and supplementary scripts to make life easier.
-
-This project is also recommended for advanced xmonad users, who may just not
-want to reinvent the wheel.  All source provided with this project is well
-documented and simple to customize.
-
-![Screenshot of xmonad-config](/vicfryzel/xmonad-config/raw/master/screenshot.png)
-
-For source code, or to contribute, see the
-[xmonad-config project page](http://github.com/vicfryzel/xmonad-config).
-
+![Screenshot of xmonad-config](/jangingnicht/xmonad-config/raw/master/screenshot.png)
 
 ## Requirements
 
@@ -45,14 +22,6 @@ For source code, or to contribute, see the
     cabal update
     cabal install yeganesh
 
-### Installing requirements on [Ubuntu Linux](http://www.ubuntu.com/)
-
-    sudo aptitude install xmonad libghc6-xmonad-contrib-dev xmobar trayer \
-        suckless-tools scrot cabal-install
-    cabal update
-    cabal install yeganesh
-    
-
 ## Installation
 
 Installing xmonad-config is a matter of backing up any xmonad configuration
@@ -64,62 +33,45 @@ you may already have, cloning the git repository, and updating your PATH.
     echo "export PATH=\$PATH:~/.cabal/bin:~/.xmonad/bin" >> ~/.bashrc
     source ~/.bashrc
 
-Once xmonad-config is installed, you also need to ensure you can actually
-start xmonad.  The mechanism to do this varies based on each environment, but
-here are some instructions for some common login managers.
-
-### Starting xmonad from xdm, kdm, or gdm
-
-    echo xmonad >> ~/.xsession
-    # Note: this method will start no programs in your new session upon login.
-    # To get a terminal in your next session, press Alt+Shift+Enter.
-    # Logout, login from xdm/kdm/gdm
-
-### Starting xmonad from slim
-
-    ln -s ~/.xmonad/xinitrc ~/.xinitrc
-    # Logout, login from slim
-
-
 ## Keyboard shortcuts
 
 After starting xmonad, use the following keyboard shortcuts to function in
 your new window manager.  I recommend you print these out so that you don't
 get stranded once you logout and back in.
 
-* Alt+Shift+Return: Start a terminal
-* Alt+Ctrl+l: Lock screen
-* Alt+p: Start dmenu.  Once it comes up, type the name of a program and enter
-* Alt+Shift+p: Take screenshot in select mode. Click or click and drag to select
-* Alt+Ctrl+Shift+p: Take fullscreen screenshot. Supports multiple monitors
-* Alt+Shift+c: Close focused window
-* Alt+Space: Change workspace layout
-* Alt+Shift+Space: Change back to default workspace layout
-* Alt+n: Resize viewed windows to the correct size
-* Alt+Tab: Focus next window
-* Alt+j: Focus next window
-* Alt+k: Focus previous window
-* Alt+m: Focus master window
-* Alt+Return: Swap focused window with master window
-* Alt+Shift+j: Swap focused window with next window
-* Alt+Shift+k: Swap focused window with previous window
-* Alt+h: Shrink master window area
-* Alt+l: Expand master window area
-* Alt+t: Push floating window back into tiling
-* Alt+,: Increment number of windows in master window area
-* Alt+.: Decrement number of windows in master window area
-* Alt+q: Restart xmonad. This reloads xmonad configuration, does not logout
-* Alt+Shift+q: Quit xmonad and logout
-* Alt+[1-9]: Switch to workspace 1-9, depending on which number was pressed
-* Alt+Shift+[1-9]: Send focused window to workspace 1-9
-* Alt+w: Focus left-most monitor (Xinerama screen 1)
-* Alt+e: Focus center-most monitor (Xinerama screen 2)
-* Alt+r: Focus right-most monitor (Xinerama screen 3)
-* Alt+Shift+w: Send focused window to workspace on left-most monitor
-* Alt+Shift+e: Send focused window to workspace on center-most monitor
-* Alt+Shift+r: Send focused window to workspace on right-most monitor
-* Alt+Left Mouse Drag: Drag focused window out of tiling
-* Alt+Right Mouse Drag: Resize focused window, bring out of tiling if needed
+* WINDOWS+Shift+Return: Start a terminal
+* WINDOWS+Ctrl+l: Lock screen
+* WINDOWS+p: Start dmenu.  Once it comes up, type the name of a program and enter
+* WINDOWS+Shift+p: Take screenshot in select mode. Click or click and drag to select
+* WINDOWS+Ctrl+Shift+p: Take fullscreen screenshot. Supports multiple monitors
+* WINDOWS+Shift+c: Close focused window
+* WINDOWS+Space: Change workspace layout
+* WINDOWS+Shift+Space: Change back to default workspace layout
+* WINDOWS+n: Resize viewed windows to the correct size
+* WINDOWS+Tab: Focus next window
+* WINDOWS+j: Focus next window
+* WINDOWS+k: Focus previous window
+* WINDOWS+m: Focus master window
+* WINDOWS+Return: Swap focused window with master window
+* WINDOWS+Shift+j: Swap focused window with next window
+* WINDOWS+Shift+k: Swap focused window with previous window
+* WINDOWS+h: Shrink master window area
+* WINDOWS+l: Expand master window area
+* WINDOWS+t: Push floating window back into tiling
+* WINDOWS+,: Increment number of windows in master window area
+* WINDOWS+.: Decrement number of windows in master window area
+* WINDOWS+q: Restart xmonad. This reloads xmonad configuration, does not logout
+* WINDOWS+Shift+q: Quit xmonad and logout
+* WINDOWS+[1-9]: Switch to workspace 1-9, depending on which number was pressed
+* WINDOWS+Shift+[1-9]: Send focused window to workspace 1-9
+* WINDOWS+w: Focus left-most monitor (Xinerama screen 1)
+* WINDOWS+e: Focus center-most monitor (Xinerama screen 2)
+* WINDOWS+r: Focus right-most monitor (Xinerama screen 3)
+* WINDOWS+Shift+w: Send focused window to workspace on left-most monitor
+* WINDOWS+Shift+e: Send focused window to workspace on center-most monitor
+* WINDOWS+Shift+r: Send focused window to workspace on right-most monitor
+* WINDOWS+Left Mouse Drag: Drag focused window out of tiling
+* WINDOWS+Right Mouse Drag: Resize focused window, bring out of tiling if needed
 
 
 ## Personalizing or modifying xmonad-config
@@ -136,6 +88,3 @@ Most of the xmobar configuration is in ~/.xmonad/xmobar.hs.
 All scripts are in ~/.xmonad/bin/.  Scripts are provided to do things like
 take screenshots, start the system tray, start dmenu, or fix your multi-head
 layout after a fullscreen application may have turned off one of the screens. 
-
-Colors set in the xmobar config and dmenu script are meant to coincide with the
-[IR_Black terminal and vim themes](http://blog.infinitered.com/entries/show/6).
