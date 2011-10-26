@@ -21,6 +21,9 @@ tray &
 urxvt &
 #urxvt &
 
+# start MDA
+fetchmail
+
 # Start two Chromium windows
 chromium &
 
