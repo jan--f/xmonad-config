@@ -12,15 +12,11 @@ is based on the config of [Vic Fryzel](http://github.com/vicfryzel/xmonad-config
 * [xmobar 0.11.1 or 0.13](http://projects.haskell.org/xmobar/)
 * [trayer 1.0](http://fbpanel.sourceforge.net/)
 * [dmenu 4.0](http://tools.suckless.org/dmenu/)
-* [yeganesh 2.2](http://dmwit.com/yeganesh/)
 * [scrot 0.8](http://freshmeat.net/projects/scrot/)
 
 ### Installing requirements on [Arch Linux](http://www.archlinux.org/)
 
-    sudo pacman -S xmonad xmonad-contrib xmobar trayer dmenu scrot \
-        cabal-install
-    cabal update
-    cabal install yeganesh
+    sudo pacman -S xmonad xmonad-contrib xmobar trayer dmenu scrot
 
 ## Installation
 
@@ -86,5 +82,5 @@ in order to modify this file, but most people have no problems.
 Most of the xmobar configuration is in ~/.xmonad/xmobar.hs.
 
 All scripts are in ~/.xmonad/bin/.  Scripts are provided to do things like
-take screenshots, start the system tray, start dmenu, or fix your multi-head
+take screenshots, start the system tray or fix your multi-head
 layout after a fullscreen application may have turned off one of the screens. 
