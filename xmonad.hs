@@ -109,11 +109,11 @@ myLayout = onWorkspace "1:term" termLayout $ onWorkspace "2:web" webLayout $ onW
 -- Currently based on the ir_black theme.
 --
 myNormalBorderColor  = "#7c7c7c"
-myFocusedBorderColor = "red"
+myFocusedBorderColor = "#dc322f"
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme {
-    activeBorderColor = "#7C7C7C",
+    activeBorderColor = "#dc322f",
     activeTextColor = "#CEFFAC",
     activeColor = "#000000",
     inactiveBorderColor = "#7C7C7C",
@@ -122,10 +122,10 @@ tabConfig = defaultTheme {
 }
 
 -- Color of current window title in xmobar.
-xmobarTitleColor = "#FFB6B0"
+xmobarTitleColor = "#cb4b16"
 
 -- Color of current workspace in xmobar.
-xmobarCurrentWorkspaceColor = "#CEFFAC"
+xmobarCurrentWorkspaceColor = "#cb4b16"
 
 -- Width of the window border in pixels.
 myBorderWidth = 1

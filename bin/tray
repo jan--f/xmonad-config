@@ -2,4 +2,4 @@
 # Script to launch trayer in the correct position next to xmobar.
 
 trayer --edge top --align left --margin 1320 --width 120 --widthtype pixel --height 12 \
-    --padding 1 --tint 0x000000 --transparent true
+    --padding 1 --tint 0x002b36 --transparent true --alpha 0
