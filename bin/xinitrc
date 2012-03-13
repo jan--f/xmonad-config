@@ -7,7 +7,7 @@ PATH=$PATH:~/.cabal/bin:~/.xmonad/bin
 # Configure X
 xsetroot -cursor_name left_ptr &
 setxkbmap -layout de &
-xrdb -merge ~/.Xdefaults &
+xrdb -merge ~/.Xresources &
 #xscreensaver -no-splash &
 #feh --bg-center ~/wallpapers/city.jpeg &
 

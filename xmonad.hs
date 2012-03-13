@@ -172,7 +172,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Launch dmenu .
   -- Use this to launch programs without a key binding.
   , ((modMask, xK_p),
-     spawn "/usr/bin/dmenu_run -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC'")
+     spawn "/usr/bin/dmenu_run -nb '#002b36' -nf '#839496' -sb '#073642' -sf '#cb4b16'")
 
   -- Take a screenshot in select mode.
   -- After pressing this key binding, click a window, or draw a rectangle with
@@ -336,13 +336,15 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 ------------------------------------------------------------------------
 -- Status bars and logging
--- Perform an arbitrary action on each internal state change or X event.
--- See the 'DynamicLog' extension for examples.
 --
--- To emulate dwm's status bar
 --
--- > logHook = dynamicLogDzen
 --
+--
+myLogHook = dynamicLogWithPP $ xmobarPP {
+    ppOutput = hPutStrLn xmproc
+  , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
+  , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
+  , ppSep = "   "}
  
 
 ------------------------------------------------------------------------
@@ -352,24 +354,9 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
+myStartupHook = setWMName "LG3D"
  
 
-------------------------------------------------------------------------
--- Run xmonad with all the defaults we set up.
---
-main = do
-  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
-  xmonad $ defaults {
-      logHook = dynamicLogWithPP $ xmobarPP {
-            ppOutput = hPutStrLn xmproc
-          , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
-          , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
-          , ppSep = "   "}
-      , manageHook = manageDocks <+> myManageHook
-      , startupHook = setWMName "LG3D"
-  }
- 
 
 ------------------------------------------------------------------------
 -- Combine it all together
@@ -396,6 +383,16 @@ defaults = defaultConfig {
  
     -- hooks, layouts
     layoutHook         = smartBorders $ myLayout,
-    manageHook         = myManageHook,
-    startupHook        = myStartupHook
+    manageHook         = manageDocks <+> myManageHook,
+    startupHook        = myStartupHook,
+    logHook            = myLogHook
 }
+
+
+------------------------------------------------------------------------
+-- Run xmonad with all the defaults we set up.
+--
+main = do
+  xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
+  xmonad $ defaults
+  }
