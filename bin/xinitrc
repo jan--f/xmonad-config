@@ -21,9 +21,6 @@ tray &
 urxvt &
 #urxvt &
 
-# start MDA
-fetchmail
-
 # Start two Chromium windows
 chromium &
 
@@ -31,8 +28,6 @@ chromium &
 xchat &
 # start pidgin
 pidgin &
-# start skype
-skype &
 
 #exec ck-launch-session nm-applet
 xmonad

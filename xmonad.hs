@@ -22,11 +22,13 @@ import Data.Ratio ((%))
 
 --etc
 import XMonad.Actions.CopyWindow
+import XMonad.Actions.CycleWS
 import XMonad.Hooks.SetWMName
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M
 import XMonad.Hooks.ManageHelpers
 import XMonad.Util.EZConfig
+import Graphics.X11.ExtraTypes.XF86
  
 ------------------------------------------------------------------------
 -- Terminal
@@ -61,6 +63,7 @@ myManageHook = composeAll
     [ className =? "Chromium"       --> doShift "2:web"
     , className =? "Gimp"           --> doFloat
     , className =? "VLC"       --> doFullFloat
+    , className =? "Evince"       --> doFullFloat
     , className =? "Pidgin"    --> doShift "4:chat"
     , className =? "Skype"     --> doShift "4:chat"
     , className =? "Google-chrome"  --> doShift "2:web"
@@ -154,7 +157,7 @@ myModMask = mod4Mask
 -- Set numlockMask = 0 if you don't have a numlock key, or want to treat
 -- numlock status separately.
 --
-myNumlockMask = mod2Mask
+--myNumlockMask = mod2Mask
  
 myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   ----------------------------------------------------------------------
@@ -164,10 +167,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Start a terminal.  Terminal to start is specified by myTerminal variable.
   [ ((modMask .|. shiftMask, xK_Return),
      spawn $ XMonad.terminal conf)
-
-  -- Lock the screen using xscreensaver.
-  , ((modMask .|. controlMask, xK_l),
-     spawn "xscreensaver-command -lock")
 
   -- Launch dmenu .
   -- Use this to launch programs without a key binding.
@@ -199,19 +198,27 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
   -- Audio previous.
   , ((0, 0x1008FF16),
-     spawn "")
+     spawn "mpc prev")
+  , ((modMask .|. controlMask, xK_Left),
+     spawn "mpc prev")
 
   -- Play/pause.
-  , ((0, 0x1008FF14),
-     spawn "")
+  , ((modMask .|. controlMask, xK_Down),
+    spawn "mpc toggle")
 
   -- Audio next.
   , ((0, 0x1008FF17),
-     spawn "")
+     spawn "mpc next")
+  , ((modMask .|. controlMask, xK_Right),
+     spawn "mpc next")
 
   -- Eject CD tray.
   , ((0, 0x1008FF2C),
      spawn "eject -T")
+
+  -- Lock Screen
+  , ((0, 0x1008FF2D),
+     spawn "slock")
 
   --------------------------------------------------------------------
   -- "Standard" xmonad key bindings
@@ -237,13 +244,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_Tab),
      windows W.focusDown)
 
-  -- Move focus to the next window.
-  , ((modMask, xK_j),
-     windows W.focusDown)
-
   -- Move focus to the previous window.
-  , ((modMask, xK_k),
-     windows W.focusUp  )
+  , ((modMask .|. shiftMask, xK_Tab),
+     windows W.focusUp)
 
   -- Move focus to the master window.
   , ((modMask, xK_m),
@@ -291,6 +294,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Restart xmonad.
   , ((modMask, xK_q),
      restart "xmonad" True)
+  , ((modMask, xK_Left  ), prevWS)
+  , ((modMask, xK_Right  ), nextWS)
   ]
   ++
  
@@ -340,7 +345,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 --
 --
 --
-myLogHook = dynamicLogWithPP $ xmobarPP {
+myLogHook xmproc = dynamicLogWithPP $ xmobarPP {
     ppOutput = hPutStrLn xmproc
   , ppTitle = xmobarColor xmobarTitleColor "" . shorten 100
   , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor ""
@@ -366,13 +371,13 @@ myStartupHook = setWMName "LG3D"
 -- 
 -- No need to modify this.
 --
-defaults = defaultConfig {
+defaults xmproc = defaultConfig {
     -- simple stuff
     terminal           = myTerminal,
     focusFollowsMouse  = myFocusFollowsMouse,
     borderWidth        = myBorderWidth,
     modMask            = myModMask,
-    numlockMask        = myNumlockMask,
+    --numlockMask        = myNumlockMask,
     workspaces         = myWorkspaces,
     normalBorderColor  = myNormalBorderColor,
     focusedBorderColor = myFocusedBorderColor,
@@ -385,7 +390,7 @@ defaults = defaultConfig {
     layoutHook         = smartBorders $ myLayout,
     manageHook         = manageDocks <+> myManageHook,
     startupHook        = myStartupHook,
-    logHook            = myLogHook
+    logHook            = myLogHook xmproc
 }
 
 
@@ -394,5 +399,4 @@ defaults = defaultConfig {
 --
 main = do
   xmproc <- spawnPipe "/usr/bin/xmobar ~/.xmonad/xmobar.hs"
-  xmonad $ defaults
-  }
+  xmonad $ defaults xmproc
